@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npx ts-node src/index.ts | pino-pretty --colorize",
+    "prisma": "dotenv -e .env prisma",
+    "db:gen": "npm run prisma generate",
+    "db:studio": "npm run prisma studio",
+    "db:migrate": "npm run prisma migrate dev",
+    "db:push": "npm run prisma db push",
+    "lint": "./node_modules/.bin/eslint"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "prisma": "^5.14.0"
+  },
+  "dependencies": {
+    "@fastify/multipart": "^8.2.0",
+    "@prisma/client": "^5.14.0",
+    "@types/node": "^20.12.13",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "dotenv-cli": "^5.1.0",
+    "env-schema": "^4.0.0",
+    "fastify": "^4.27.0",
+    "fastify-cors": "^6.1.0",
+    "fluent-json-schema": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

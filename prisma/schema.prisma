@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  username  String           @unique
+  password  String
+  firstName String
+  lastName  String
+  createdAt DateTime         @default(now())
+  accounts  PaymentAccount[]
+}
+
+model PaymentAccount {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String           @db.ObjectId
+  accountType      AccountType
+  accountNumber    String           @unique
+  balance          Float            @default(0.00)
+  createdAt        DateTime         @default(now())
+  user             User             @relation(fields: [userId], references: [id])
+  fromTransactions Transaction[]    @relation("FromAccount")
+  toTransactions   Transaction[]    @relation("ToAccount")
+  histories        PaymentHistory[]
+}
+
+model Transaction {
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  amount        Float
+  timestamp     DateTime          @default(now())
+  fromAccountId String?           @db.ObjectId
+  toAccountId   String?           @db.ObjectId
+  status        TransactionStatus @default(PENDING)
+  fromAccount   PaymentAccount?   @relation("FromAccount", fields: [fromAccountId], references: [id])
+  toAccount     PaymentAccount?   @relation("ToAccount", fields: [toAccountId], references: [id])
+  histories     PaymentHistory[]
+}
+
+model PaymentHistory {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  accountId     String         @db.ObjectId
+  transactionId String         @db.ObjectId
+  account       PaymentAccount @relation(fields: [accountId], references: [id])
+  transaction   Transaction    @relation(fields: [transactionId], references: [id])
+  createdAt     DateTime       @default(now())
+}
+
+enum AccountType {
+  CREDIT
+  DEBIT
+  LOAN
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
