@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
-var jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
+import { defaultSecretKey } from './constants';
 
 export const utils = {
   isJSON: (data: string) => {
@@ -33,13 +34,13 @@ export const utils = {
     });
   },
   generateToken: (data: any) => {
-    return jwt.sign(data, process.env.SECRET_KEY, {
+    return jwt.sign(data, process.env.SECRET_KEY || defaultSecretKey, {
       expiresIn: '1h',
     });
   },
   verifyToken: (token: any) => {
     try {
-      return jwt.verify(token, process.env.SECRET_KEY);
+      return jwt.verify(token, process.env.SECRET_KEY || defaultSecretKey);
     } catch (error) {
       return null;
     }

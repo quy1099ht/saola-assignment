@@ -7,6 +7,7 @@ interface UserDocument extends Document {
   firstName: string;
   lastName: string;
   createdAt: Date;
+  isActive: boolean;
   accounts: PaymentAccountDocument[];
 }
 
@@ -16,6 +17,7 @@ const userSchema = new Schema<UserDocument>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  isActive: { type: Boolean, default: true },
   accounts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PaymentAccount' }],
 });
 

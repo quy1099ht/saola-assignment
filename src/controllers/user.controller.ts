@@ -13,17 +13,32 @@ export const login = async (request: FastifyRequest, reply: FastifyReply) => {
       throw ERRORS.userNotExists;
     }
 
-    const checkPass = await utils.compareHash(password, user.passwordHash);
+    // const hashPass = await utils.genSalt(10, password)
+    const checkPass = await utils.compareHash(user.passwordHash, password);
     if (!checkPass) {
       throw ERRORS.userCredError;
     }
+    
+    const tempUser = {
+      id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
     const token = utils.generateToken({
-      id: user._id,
-      email: user.username,
+      ...tempUser,
     });
 
-    reply.code(STANDARD.SUCCESS).send({ token });
+    reply.code(STANDARD.SUCCESS).send({
+      data: {
+        token,
+        user: {
+          ...tempUser,
+        },
+      },
+      status: STANDARD.SUCCESS,
+    });
   } catch (err) {
     handleServerError(reply, err);
   }
@@ -47,9 +62,12 @@ export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
     await newUser.save();
 
     reply.code(STANDARD.SUCCESS).send({
-      username,
-      firstName,
-      lastName,
+      data: {
+        username,
+        firstName,
+        lastName,
+      },
+      status: STANDARD.SUCCESS,
     });
   } catch (err) {
     handleServerError(reply, err);

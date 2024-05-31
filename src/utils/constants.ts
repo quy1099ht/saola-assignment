@@ -64,3 +64,5 @@ export const swaggerConfig: FastifyRegisterOptions<any> = {
     ],
   },
 };
+
+export const defaultSecretKey = 'sfjusinuasngusdenafuasghnuijkasf' // This is just a random text cus I don't want to put empty string in
