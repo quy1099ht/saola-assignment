@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId
-  username  String           @unique
-  password  String
-  firstName String
-  lastName  String
-  createdAt DateTime         @default(now())
-  accounts  PaymentAccount[]
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  username     String           @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  createdAt    DateTime         @default(now())
+  accounts     PaymentAccount[]
 }
 
 model PaymentAccount {

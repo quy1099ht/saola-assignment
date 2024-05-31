@@ -25,13 +25,6 @@ const start = async () => {
     server.get("/", (_, reply) => {
       reply.send({ name: "fastify-typescript" });
     });
-    server.get("/test", async (_, reply) => {
-      try {
-        reply.status(200).send(utils.test());
-      } catch (e) {
-        reply.status(500).send();
-      }
-    });
 
     await server.listen({ port });
     server.log.info(`Server listening on http://localhost:3000`);

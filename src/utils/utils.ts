@@ -1,5 +1,6 @@
-import * as bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import * as bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
+var jwt = require('jsonwebtoken');
 
 export const prisma = new PrismaClient();
 
@@ -34,7 +35,16 @@ export const utils = {
       });
     });
   },
-  test: () => {
-    return { result: "Done" };
+  generateToken: (data: any) => {
+    return jwt.sign(data, process.env.SECRET_KEY, {
+      expiresIn: '1h',
+    });
+  },
+  verifyToken: (token: any) => {
+    try {
+      return jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+      return null;
+    }
   },
 };
