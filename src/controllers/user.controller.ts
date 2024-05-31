@@ -5,9 +5,9 @@ import { ILoginBody, ISignInBody } from '../interfaces';
 import { utils } from '../utils/utils';
 import User from '../models/user.model';
 
-export const login = async (request: FastifyRequest<{ Body: ILoginBody }>, reply: FastifyReply) => {
+export const login = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { username, password } = request.body;
+    const { username, password } = request.body as ILoginBody;
     const user = await User.findOne({ username: username });
     if (!user) {
       throw ERRORS.userNotExists;
@@ -29,15 +29,12 @@ export const login = async (request: FastifyRequest<{ Body: ILoginBody }>, reply
   }
 };
 
-export const signUp = async (
-  request: FastifyRequest<{ Body: ISignInBody }>,
-  reply: FastifyReply,
-) => {
+export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { username, password, firstName, lastName } = request.body;
+    const { username, password, firstName, lastName } = request.body as ISignInBody;
     const existingUser = await User.findOne({ username: username });
     if (existingUser) {
-      return reply.code(409).send(ERRORS.userExists);
+      throw ERRORS.userExists;
     }
 
     const hashPass = await utils.genSalt(10, password);

@@ -3,8 +3,6 @@ import { loginSchema, signupSchema } from '../schema';
 import * as controllers from '../controllers'
 
 async function userRouter(fastify: FastifyInstance) {
-  fastify.decorateRequest('authUser', '')
-
   fastify.route({
     method: 'POST',
     url: '/login',
