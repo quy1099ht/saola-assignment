@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@fastify/multipart": "^8.2.0",
-    "@prisma/client": "^5.14.0",
+    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger-ui": "^3.0.0",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.12.13",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.0",
@@ -25,6 +27,7 @@
     "fastify-cors": "^6.1.0",
     "fluent-json-schema": "^3.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

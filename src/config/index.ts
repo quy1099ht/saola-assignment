@@ -1,7 +1,6 @@
 import path from 'path';
 import envSchema from 'env-schema';
 import S from 'fluent-json-schema';
-import { utils } from '../utils/utils';
 
 export default function loadConfig(): void {
   // Load environment variables from .env file

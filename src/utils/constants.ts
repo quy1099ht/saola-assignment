@@ -1,3 +1,5 @@
+import { FastifyRegisterOptions } from "fastify";
+
 export const STANDARD = {
   CREATED: 201,
   SUCCESS: 200,
@@ -32,4 +34,33 @@ export const ERROR_409 = {
 export const ERROR_400 = {
   statusCode: 400,
   message: 'BAD_REQUEST',
+};
+
+export const swaggerConfig: FastifyRegisterOptions<any> = {
+  openapi: {
+    info: {
+      title: 'Forest Fire API',
+      description: 'Forest Fire API Documentation',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT || 8080}`,
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+        },
+      },
+    },
+    tags: [
+      {
+        name: 'Root',
+        description: 'Root endpoints',
+      },
+    ],
+  },
 };

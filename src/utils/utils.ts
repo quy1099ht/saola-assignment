@@ -1,8 +1,5 @@
 import * as bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
 var jwt = require('jsonwebtoken');
-
-export const prisma = new PrismaClient();
 
 export const utils = {
   isJSON: (data: string) => {

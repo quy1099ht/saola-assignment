@@ -1,49 +1,55 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { PrismaClient } from '@prisma/client';
+import { STANDARD } from '../utils/constants';
 
-const prisma = new PrismaClient();
-
-export default async function transactionRoutes(fastify: FastifyInstance, opts: FastifyPluginOptions) {
+export default async function transactionRoutes(
+  fastify: FastifyInstance,
+  opts: FastifyPluginOptions,
+) {
   fastify.post('/transactions', async (request, reply) => {
-    const { amount, fromAccountId, toAccountId } = request.body as { amount: number, fromAccountId: string, toAccountId: string };
+    const { amount, fromAccountId, toAccountId } = request.body as {
+      amount: number;
+      fromAccountId: string;
+      toAccountId: string;
+    };
 
-    const session = await prisma.$transaction(async (prisma) => {
-      const fromAccount = await prisma.paymentAccount.findUnique({ where: { id: fromAccountId } });
-      const toAccount = await prisma.paymentAccount.findUnique({ where: { id: toAccountId } });
+    // const session = await prisma.$transaction(async (prisma) => {
+    //   const fromAccount = await prisma.paymentAccount.findUnique({ where: { id: fromAccountId } });
+    //   const toAccount = await prisma.paymentAccount.findUnique({ where: { id: toAccountId } });
 
-      if (!fromAccount || !toAccount || fromAccount.balance < amount) {
-        throw new Error('Transaction error: Invalid accounts or insufficient funds');
-      }
+    //   if (!fromAccount || !toAccount || fromAccount.balance < amount) {
+    //     throw new Error('Transaction error: Invalid accounts or insufficient funds');
+    //   }
 
-      await prisma.paymentAccount.update({
-        where: { id: fromAccountId },
-        data: { balance: { decrement: amount } },
-      });
+    //   await prisma.paymentAccount.update({
+    //     where: { id: fromAccountId },
+    //     data: { balance: { decrement: amount } },
+    //   });
 
-      await prisma.paymentAccount.update({
-        where: { id: toAccountId },
-        data: { balance: { increment: amount } },
-      });
+    //   await prisma.paymentAccount.update({
+    //     where: { id: toAccountId },
+    //     data: { balance: { increment: amount } },
+    //   });
 
-      const transaction = await prisma.transaction.create({
-        data: {
-          amount,
-          fromAccountId,
-          toAccountId,
-          status: 'COMPLETED',
-        },
-      });
+    //   const transaction = await prisma.transaction.create({
+    //     data: {
+    //       amount,
+    //       fromAccountId,
+    //       toAccountId,
+    //       status: 'COMPLETED',
+    //     },
+    //   });
 
-      await prisma.paymentHistory.createMany({
-        data: [
-          { accountId: fromAccountId, transactionId: transaction.id },
-          { accountId: toAccountId, transactionId: transaction.id },
-        ],
-      });
+    //   await prisma.paymentHistory.createMany({
+    //     data: [
+    //       { accountId: fromAccountId, transactionId: transaction.id },
+    //       { accountId: toAccountId, transactionId: transaction.id },
+    //     ],
+    //   });
 
-      return transaction;
-    });
+    //   return transaction;
+    // });
 
-    reply.send(session);
+    // reply.send(session);
+    reply.code(STANDARD.SUCCESS).send({ data: '' });
   });
 }

@@ -1,27 +1,28 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ERROR_400, STANDARD } from '../utils/constants';
 import { ERRORS, handleServerError } from '../utils/errors';
-import { ISignInBody } from '../interfaces';
-import { prisma, utils } from '../utils/utils';
+import { ILoginBody, ISignInBody } from '../interfaces';
+import { utils } from '../utils/utils';
+import User from '../models/user.model';
 
-export const login = async (
-  request: FastifyRequest<{ Body: ISignInBody }>,
-  reply: FastifyReply,
-) => {
+export const login = async (request: FastifyRequest<{ Body: ILoginBody }>, reply: FastifyReply) => {
   try {
-    const { username, password, firstName, lastName } = request.body;
-    const user = await prisma.user.findUnique({ where: { username: username } });
+    const { username, password } = request.body;
+    const user = await User.findOne({ username: username });
     if (!user) {
-      reply.code(ERROR_400.statusCode).send(ERRORS.userNotExists);
+      throw ERRORS.userNotExists;
     }
-    const checkPass = await utils.compareHash(password, user?.passwordHash);
+
+    const checkPass = await utils.compareHash(password, user.passwordHash);
     if (!checkPass) {
-      reply.code(ERROR_400.statusCode).send(ERRORS.userCredError);
+      throw ERRORS.userCredError;
     }
+
     const token = utils.generateToken({
-      id: user?.id,
-      email: user?.username,
+      id: user._id,
+      email: user.username,
     });
+
     reply.code(STANDARD.SUCCESS).send({ token });
   } catch (err) {
     handleServerError(reply, err);
@@ -34,20 +35,19 @@ export const signUp = async (
 ) => {
   try {
     const { username, password, firstName, lastName } = request.body;
-    const user = await prisma.user.findUnique({ where: { username: username } });
-    if (user) {
-      reply.code(409).send(ERRORS.userExists);
+    const existingUser = await User.findOne({ username: username });
+    if (existingUser) {
+      return reply.code(409).send(ERRORS.userExists);
     }
 
     const hashPass = await utils.genSalt(10, password);
-    await prisma.user.create({
-      data: {
-        username,
-        firstName,
-        lastName,
-        passwordHash: String(hashPass),
-      },
+    const newUser = new User({
+      username,
+      firstName,
+      lastName,
+      passwordHash: hashPass,
     });
+    await newUser.save();
 
     reply.code(STANDARD.SUCCESS).send({
       username,
