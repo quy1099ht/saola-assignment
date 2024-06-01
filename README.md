@@ -10,9 +10,8 @@ This repository contains a Fastify application integrated with MongoDB, orchestr
   - [Environment Variables](#environment-variables)
   - [Docker Compose](#docker-compose)
 - [Running the Application](#running-the-application)
-- [Resetting Containers](#resetting-containers)
+- [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
-- [Utilities](#utilities)
 - [Troubleshooting](#troubleshooting)
 
 ## Hardships
@@ -94,82 +93,68 @@ docker-compose up --build
 
 This command will build the Docker images and start the containers for both the Fastify application and MongoDB.
 
-## Resetting Containers
-
-To stop and remove old containers, networks, and volumes, and rebuild the application, run the provided `reset-containers.sh` script.
-
-### `reset-containers.sh`
-
-```sh
-#!/bin/bash
-
-# Stop and remove old containers, networks, and volumes
-docker-compose down
-
-# Remove unused images
-docker image prune -a -f
-
-# Remove unused volumes
-docker volume prune -f
-
-# Build and start new containers
-docker-compose up --build
+## Project Structure
+```bash
+├── .env
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── README.md
+└── src/
+    ├── config/
+    │   ├── index.ts
+    ├── controllers/
+    |   ├── index.ts
+    │   ├── user.controller.ts
+    │   ├── payment-account.controller.ts
+    │   ├── transaction.controller.ts
+    ├── interfaces/
+    │   ├── index.ts
+    ├── models/
+    │   ├── user.model.ts
+    │   ├── payment-account.model.ts
+    │   ├── transaction.model.ts
+    │   ├── payment-history.model.ts
+    ├── plugins/
+    │   ├── mongoose.ts
+    ├── routes/
+    │   ├── users.ts
+    │   ├── paymentAccounts.ts
+    │   ├── transactions.ts
+    ├── schema/
+    │   ├── index.ts
+    │   ├── user.schema.ts
+    ├── utils/
+    │   ├── auth.ts
+    │   ├── constants.ts
+    │   ├── errors.ts
+    │   ├── utils.ts
+    └── index.ts
 ```
-
-Make the script executable:
-
-```sh
-chmod +x reset-containers.sh
-```
-
-Run the script:
-
-```sh
-./reset-containers.sh
-```
-
 ## Endpoints
 
-### Authentication Endpoints
+### General
 
-- **Login**: `POST /login`
-- **Sign Up**: `POST /signup`
+- **GET /docs: Swaggers endpoint.
+- **GET /health**: Health check endpoint to ensure the server is running.
 
-### Transaction Endpoints
+### User Authentication
 
-- **Send**: `POST /transaction/send`
-- **Withdraw**: `POST /transaction/withdraw`
+- **POST /api/user/login**: Endpoint for user login.
+- **POST /api/user/signup**: Endpoint for user signup.
 
-## Utilities
+### Payment Account Management
 
-### Account Number Generator
+- **POST /api/payment-account/createPaymentAccount**: Endpoint to create a new payment account.
+- **POST /api/payment-account/editPaymentAccount**: Endpoint to edit an existing payment account.
+- **GET /api/payment-account/getPaymentAccounts**: Endpoint to retrieve all payment accounts for a user.
 
-The application includes a utility to generate unique account numbers for payment accounts.
+### Transaction Management
 
-### Currency Converter
+- **POST /api/transaction/withdraw**: Endpoint to withdraw money from an account.
+- **POST /api/transaction/send**: Endpoint to send money to another account.
 
-Utility function to convert amounts between USD, VND, and EUR.
-
-```typescript
-import axios from 'axios';
-
-const exchangeRates = {
-  USD: { VND: 23000, EUR: 0.85 },
-  VND: { USD: 0.000043, EUR: 0.000037 },
-  EUR: { USD: 1.18, VND: 27000 },
-};
-
-type Currency = 'USD' | 'VND' | 'EUR';
-
-export const convertCurrency = (amount: number, from: Currency, to: Currency): number => {
-  if (from === to) {
-    return amount;
-  }
-
-  const rate = exchangeRates[from][to];
-  return amount * rate;
-};
-```
 
 ## Troubleshooting
 
