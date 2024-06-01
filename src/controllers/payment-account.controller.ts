@@ -27,13 +27,15 @@ export const createPaymentAccount = async (request: FastifyRequest, reply: Fasti
     });
     await newAccount.save();
 
-    reply.status(STANDARD.CREATED).send({
-      data: {
-        user: utils.sanitizeUserData(user),
-        account: newAccount,
-      },
-      statusCode: STANDARD.CREATED,
-    });
+    reply.status(STANDARD.CREATED).send(
+      utils.standardizedAPIResponse(
+        {
+          user: utils.sanitizeUserData(user),
+          account: newAccount,
+        },
+        STANDARD.CREATED,
+      ),
+    );
   } catch (err) {
     handleServerError(reply, err);
   }
@@ -47,7 +49,7 @@ export const editPaymentAccount = async (request: FastifyRequest, reply: Fastify
 
     if (!paymentAccountId)
       return reply.status(ERROR_400.statusCode).send({
-        statusCode: ERROR_400.statusCode,
+        status: ERROR_400.statusCode,
         message: ERROR_400.message,
       });
 
@@ -66,19 +68,21 @@ export const editPaymentAccount = async (request: FastifyRequest, reply: Fastify
     if (!result.acknowledged)
       throw new CustomError(`${ERROR_500}`, 'Edit Payment Account unsuccessfully.');
 
-    return reply.status(STANDARD.SUCCESS).send({
-      data: {
-        user: utils.sanitizeUserData(user),
-        account: {
-          ...paymentAccount,
-          accountType: accountType || paymentAccount?.accountType,
-          balance: balance || paymentAccount?.balance,
-          isActive: isActive || paymentAccount?.isActive,
-          currency: currency || paymentAccount?.currency,
+    return reply.status(STANDARD.SUCCESS).send(
+      utils.standardizedAPIResponse(
+        {
+          user: utils.sanitizeUserData(user),
+          account: {
+            ...paymentAccount,
+            accountType: accountType || paymentAccount?.accountType,
+            balance: balance || paymentAccount?.balance,
+            isActive: isActive || paymentAccount?.isActive,
+            currency: currency || paymentAccount?.currency,
+          },
         },
-      },
-      statusCode: STANDARD.CREATED,
-    });
+        STANDARD.CREATED,
+      ),
+    );
   } catch (err) {
     handleServerError(reply, err);
   }
@@ -89,13 +93,15 @@ export const getUserPaymentAccounts = async (request: FastifyRequest, reply: Fas
     const user = await auth.getUser(request);
     const paymentAccounts = await PaymentAccount.find({ userId: user._id });
 
-    reply.status(STANDARD.CREATED).send({
-      data: {
-        user: utils.sanitizeUserData(user),
-        accounts: paymentAccounts,
-      },
-      statusCode: STANDARD.CREATED,
-    });
+    reply.status(STANDARD.CREATED).send(
+      utils.standardizedAPIResponse(
+        {
+          user: utils.sanitizeUserData(user),
+          accounts: paymentAccounts,
+        },
+        STANDARD.CREATED,
+      ),
+    );
   } catch (err) {
     handleServerError(reply, err);
   }

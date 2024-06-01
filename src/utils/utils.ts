@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { defaultSecretKey, exchangeRates } from './constants';
 import PaymentAccount from '../models/payment-account.model';
 import { UserDocument } from '../models/user.model';
-import { Currency } from '../interfaces';
+import { Currency, IResponse } from '../interfaces';
 
 export const utils = {
   isJSON: (data: string) => {
@@ -82,5 +82,11 @@ export const utils = {
     }
 
     return amount * rate;
+  },
+  standardizedAPIResponse: (data: Object, status: number): IResponse => {
+    return {
+      data,
+      status,
+    };
   },
 };

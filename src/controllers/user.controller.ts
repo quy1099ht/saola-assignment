@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ERROR_400, STANDARD } from '../utils/constants';
 import { ERRORS, handleServerError } from '../utils/errors';
-import { ILoginBody, ISignInBody } from '../interfaces';
+import { ILoginBody, IResponse, ISignInBody } from '../interfaces';
 import { utils } from '../utils/utils';
 import User from '../models/user.model';
 import PaymentAccount, { CurrencyType } from '../models/payment-account.model';
@@ -31,15 +31,17 @@ export const login = async (request: FastifyRequest, reply: FastifyReply) => {
       ...tempUser,
     });
 
-    reply.code(STANDARD.SUCCESS).send({
-      data: {
-        token,
-        user: {
-          ...tempUser,
+    reply.code(STANDARD.SUCCESS).send(
+      utils.standardizedAPIResponse(
+        {
+          token,
+          user: {
+            ...tempUser,
+          },
         },
-      },
-      status: STANDARD.SUCCESS,
-    });
+        STANDARD.SUCCESS,
+      ),
+    );
   } catch (err) {
     handleServerError(reply, err);
   }
@@ -72,10 +74,9 @@ export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
     });
     await newAccount.save();
 
-    reply.code(STANDARD.SUCCESS).send({
-      data: utils.sanitizeUserData(newUser),
-      status: STANDARD.SUCCESS,
-    });
+    reply
+      .code(STANDARD.SUCCESS)
+      .send(utils.standardizedAPIResponse(utils.sanitizeUserData(newUser), STANDARD.SUCCESS));
   } catch (err) {
     handleServerError(reply, err);
   }

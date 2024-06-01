@@ -39,3 +39,8 @@ export interface IEditPaymentAccountBody {
   isActive?: boolean;
   currency?: CurrencyType;
 }
+
+export interface IResponse {
+  data: Object;
+  status: number;
+}
