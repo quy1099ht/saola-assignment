@@ -50,8 +50,8 @@ const start = async () => {
       }
     });
 
-    await server.listen({ port });
-    server.log.info(`Server listening on http://localhost:${port}`);
+    await server.listen({ port,  host: '0.0.0.0'});
+    // server.log.info(`Server listening on http://localhost:${port}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

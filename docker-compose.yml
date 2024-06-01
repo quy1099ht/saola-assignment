@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  fastify-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastify-app
+    restart: always
+    ports:
+      - '8080:8080'
+    environment:
+      DATABASE_URL: mongodb://admin:admin@mongo:27017/saola-crypto?retryWrites=true&w=majority&authSource=admin
+      PORT: 8080
+      SECRET_KEY: y4kXCSAHfluj3iOfd8uakdoakojv
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo-data:

@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "npx ts-node src/index.ts | pino-pretty --colorize",
+    "start": "npx ts-node src/index.ts",
     "prisma": "dotenv -e .env prisma",
     "db:gen": "npm run prisma generate",
     "db:studio": "npm run prisma studio",
