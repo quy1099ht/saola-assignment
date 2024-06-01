@@ -1,13 +1,10 @@
-Sure, here is the README in a `.md` format.
-
----
-
 # Fastify Application with MongoDB
 
 This repository contains a Fastify application integrated with MongoDB, orchestrated using Docker Compose. The application provides basic user authentication and transaction management functionalities.
 
 ## Table of Contents
 
+- [Hardships](#hardships)
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
   - [Environment Variables](#environment-variables)
@@ -18,6 +15,16 @@ This repository contains a Fastify application integrated with MongoDB, orchestr
 - [Utilities](#utilities)
 - [Troubleshooting](#troubleshooting)
 
+## Hardships
+### Things I was not able to do:
+- Implementing Prisma into the system.
+- Reason: Couldn't be able to make a replica set for mongodb.
+### Things that can be improved:
+- Code implementation on the transfering money side can be broken down to smaller parts.
+- Better way to handle swagger. Couldn't set up body params and such for Swaggers.
+- A lot of magical numbers and strings can be placed somewhere else.
+- Handle schema errors. I haven't figured out how to block and handle it.
+- Need quite some efforts to refactor codes.
 ## Prerequisites
 
 Make sure you have the following installed on your machine:
@@ -186,7 +193,3 @@ docker-compose logs mongodb
 
 If you encounter any issues, please open an issue on the GitHub repository or contact the maintainers for assistance.
 ```
-
----
-
-Save the above content as `README.md` in the root directory of your project. This document provides comprehensive instructions for setting up, running, and troubleshooting your Fastify application with MongoDB, using Docker Compose. Adjust any parts to fit your project's specific details as needed.
