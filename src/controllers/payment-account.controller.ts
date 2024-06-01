@@ -5,6 +5,8 @@ import { ICreatePaymentAccountBody, IEditPaymentAccountBody } from '../interface
 import { utils } from '../utils/utils';
 import { auth } from '../utils/auth';
 import PaymentAccount, { CurrencyType } from '../models/payment-account.model';
+import Transaction from '../models/transaction.model';
+import PaymentHistory from '../models/payment-history.model';
 
 export const createPaymentAccount = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -89,6 +91,20 @@ export const getUserPaymentAccounts = async (request: FastifyRequest, reply: Fas
   try {
     const user = await auth.getUser(request);
     const paymentAccounts = await PaymentAccount.find({ userId: user._id });
+
+    for (let i = 0; i < paymentAccounts.length; i++) {
+      paymentAccounts[i].toTransactions = await Transaction.find({
+        toAccountId: paymentAccounts[i].id,
+      });
+      paymentAccounts[i].fromTransactions = await Transaction.find({
+        fromAccountId: paymentAccounts[i].id,
+      });
+      paymentAccounts[i].histories = await PaymentHistory.find({
+        accountId: paymentAccounts[i].id,
+      });
+    }
+
+
 
     reply.status(STANDARD.CREATED).send(
       utils.standardizedAPIResponse(

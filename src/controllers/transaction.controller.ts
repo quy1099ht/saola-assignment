@@ -123,8 +123,8 @@ export const send = async (request: FastifyRequest, reply: FastifyReply) => {
       currency: paymentAccount?.currency,
       fromAccount: paymentAccount,
       fromAccountId: paymentAccount?._id,
-      toPaymentAccount: toPaymentAccount,
-      toPaymentAccountId: toPaymentAccountId,
+      toAccount: toPaymentAccount,
+      toAccountId: toPaymentAccount?._id,
       status: 'PENDING',
     });
     await transaction.save();
@@ -153,7 +153,7 @@ export const send = async (request: FastifyRequest, reply: FastifyReply) => {
       paymentAccount.currency,
     );
 
-     toPaymentAccount.balance += utils.convertCurrency(
+    toPaymentAccount.balance += utils.convertCurrency(
       moneyAmount,
       paymentAccount.currency,
       toPaymentAccount.currency,
@@ -161,7 +161,7 @@ export const send = async (request: FastifyRequest, reply: FastifyReply) => {
 
     paymentAccount.fromTransactions.push(transaction);
     await paymentAccount.save();
-    
+
     toPaymentAccount.toTransactions.push(transaction);
     await toPaymentAccount.save();
 
@@ -173,10 +173,21 @@ export const send = async (request: FastifyRequest, reply: FastifyReply) => {
       transactionId: transaction._id,
     });
 
+    const newPaymentHistory2 = new PaymentHistory({
+      account: toPaymentAccount,
+      accountId: toPaymentAccount._id,
+      transaction: transaction,
+      transactionId: transaction._id,
+    });
+
     await newPaymentHistory.save();
+    await newPaymentHistory2.save();
 
     paymentAccount.histories.push(newPaymentHistory);
     await paymentAccount.save();
+
+    toPaymentAccount.histories.push(newPaymentHistory2);
+    await toPaymentAccount.save();
 
     reply.status(STANDARD.SUCCESS).send(utils.standardizedAPIResponse({}, STANDARD.SUCCESS));
   } catch (err) {
