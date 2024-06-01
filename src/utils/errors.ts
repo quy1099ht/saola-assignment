@@ -17,6 +17,7 @@ export const ERRORS = {
   tokenError: new CustomError(`${ERROR_409.statusCode}`, 'Invalid Token'),
   tokenNotExist: new CustomError(`${ERROR_401.statusCode}`, 'Token not found'),
   unAuthorizedAccesss: new CustomError(`${ERROR_401.statusCode}`, 'Unauthorized Access'),
+  accountNotFound: new CustomError(`${ERROR_404.statusCode}`, 'Account not found')
 };
 
 export function handleServerError(reply: FastifyReply, error: any) {
