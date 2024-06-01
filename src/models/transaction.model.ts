@@ -16,7 +16,7 @@ interface TransactionDocument extends Document {
   status: TransactionStatus;
   fromAccount?: PaymentAccountDocument;
   toAccount?: PaymentAccountDocument;
-  histories: PaymentHistoryDocument[];
+  // histories: PaymentHistoryDocument[];
 }
 
 const transactionSchema = new Schema<TransactionDocument>({
@@ -27,7 +27,7 @@ const transactionSchema = new Schema<TransactionDocument>({
   status: { type: String, enum: Object.values(TransactionStatus), default: TransactionStatus.PENDING },
   fromAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentAccount' },
   toAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentAccount' },
-  histories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PaymentHistory' }],
+  // histories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PaymentHistory' }],
 });
 
 const Transaction = mongoose.model<TransactionDocument>('Transaction', transactionSchema);

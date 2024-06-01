@@ -7,10 +7,8 @@ import userRouter from './routes/users';
 import mongoosePlugin from './plugins/mongoose';
 import mongoose from 'mongoose';
 import { ERROR_500, STANDARD, swaggerConfig } from './utils/constants';
-import path from 'path';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastifySwagger from '@fastify/swagger';
-import { loginSchema } from './schema';
 loadConfig();
 
 const port = 8080;

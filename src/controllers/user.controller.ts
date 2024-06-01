@@ -4,6 +4,7 @@ import { ERRORS, handleServerError } from '../utils/errors';
 import { ILoginBody, ISignInBody } from '../interfaces';
 import { utils } from '../utils/utils';
 import User from '../models/user.model';
+import PaymentAccount from '../models/payment-account.model';
 
 export const login = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -18,7 +19,7 @@ export const login = async (request: FastifyRequest, reply: FastifyReply) => {
     if (!checkPass) {
       throw ERRORS.userCredError;
     }
-    
+
     const tempUser = {
       id: user._id,
       username: user.username,
@@ -61,12 +62,17 @@ export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
     });
     await newUser.save();
 
+    const accountNumber = await utils.generateAccountNumber();
+    const newAccount = new PaymentAccount({
+      userId: newUser._id,
+      accountType: 'DEBIT',
+      accountNumber,
+      balance: 0.0,
+    });
+    await newAccount.save();
+
     reply.code(STANDARD.SUCCESS).send({
-      data: {
-        username,
-        firstName,
-        lastName,
-      },
+      data: utils.sanitizeUserData(newUser),
       status: STANDARD.SUCCESS,
     });
   } catch (err) {

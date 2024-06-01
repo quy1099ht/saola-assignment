@@ -1,6 +1,8 @@
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { defaultSecretKey } from './constants';
+import PaymentAccount from '../models/payment-account.model';
+import { UserDocument } from '../models/user.model';
 
 export const utils = {
   isJSON: (data: string) => {
@@ -45,4 +47,27 @@ export const utils = {
       return null;
     }
   },
+  getBearerToken: (authHeader: string | undefined) => {
+    return authHeader?.split(' ')[1];
+  },
+  generateAccountNumber: async () => {
+    let accountNumber;
+    let isUnique = false;
+    while (!isUnique) {
+      accountNumber = Math.floor(Math.random() * 9000000000) + 1000000000; // Generate a 10-digit number
+      const existingAccount = await PaymentAccount.findOne({ accountNumber });
+      if (!existingAccount) {
+        isUnique = true;
+      }
+    }
+    return accountNumber;
+  },
+  sanitizeUserData:(user: UserDocument) => {
+    return {
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastname: user.lastName,
+    }
+  }
 };
