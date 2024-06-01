@@ -74,6 +74,9 @@ export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
     });
     await newAccount.save();
 
+    newUser.accounts.push(newAccount);
+    await newUser.save();
+
     reply
       .code(STANDARD.SUCCESS)
       .send(utils.standardizedAPIResponse(utils.sanitizeUserData(newUser), STANDARD.SUCCESS));

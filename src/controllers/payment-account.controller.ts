@@ -1,14 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ERROR_400, ERROR_500, STANDARD } from '../utils/constants';
-import { CustomError, ERRORS, handleServerError } from '../utils/errors';
-import {
-  ICreatePaymentAccountBody,
-  IEditPaymentAccountBody,
-  ILoginBody,
-  ISignInBody,
-} from '../interfaces';
+import { CustomError, handleServerError } from '../utils/errors';
+import { ICreatePaymentAccountBody, IEditPaymentAccountBody } from '../interfaces';
 import { utils } from '../utils/utils';
-import User from '../models/user.model';
 import { auth } from '../utils/auth';
 import PaymentAccount, { CurrencyType } from '../models/payment-account.model';
 
@@ -26,6 +20,9 @@ export const createPaymentAccount = async (request: FastifyRequest, reply: Fasti
       balance: balance || 0.0,
     });
     await newAccount.save();
+
+    user.accounts.push(newAccount);
+    await user.save();
 
     reply.status(STANDARD.CREATED).send(
       utils.standardizedAPIResponse(

@@ -44,3 +44,14 @@ export interface IResponse {
   data: Object;
   status: number;
 }
+
+export interface IWithdrawBody {
+  paymentAccountId: string;
+  moneyAmount: number;
+}
+
+export interface ISendBody {
+  paymentAccountId: string;
+  moneyAmount: number;
+  toPaymentAccountId: string;
+}
