@@ -1,8 +1,9 @@
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { defaultSecretKey } from './constants';
+import { defaultSecretKey, exchangeRates } from './constants';
 import PaymentAccount from '../models/payment-account.model';
 import { UserDocument } from '../models/user.model';
+import { Currency } from '../interfaces';
 
 export const utils = {
   isJSON: (data: string) => {
@@ -62,12 +63,24 @@ export const utils = {
     }
     return accountNumber;
   },
-  sanitizeUserData:(user: UserDocument) => {
+  sanitizeUserData: (user: UserDocument) => {
     return {
       _id: user._id,
       username: user.username,
       firstName: user.firstName,
       lastname: user.lastName,
+    };
+  },
+  convertCurrency: (amount: number, from: Currency, to: Currency): number => {
+    if (from === to) {
+      return amount;
     }
-  }
+
+    const rate = exchangeRates[from][to];
+    if (!rate) {
+      throw new Error(`Exchange rate not available for ${from} to ${to}`);
+    }
+
+    return amount * rate;
+  },
 };

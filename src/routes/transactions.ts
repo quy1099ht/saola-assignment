@@ -1,12 +1,18 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { isNullOrUndefined } from 'util';
+import * as controllers from '../controllers';
 
-export default async function paymentAccountRoutes(fastify: FastifyInstance, opts: FastifyPluginOptions) {
-  fastify.post('/payment-accounts', async (request, reply) => {
-    // const { userId, accountType, accountNumber, balance } = request.body as { userId: string, accountType: AccountType, accountNumber: string, balance: number };
-    // const paymentAccount = await prisma.paymentAccount.create({
-    //   data: { userId, accountType, accountNumber, balance },
-    // });
-    reply.send('');
+async function transactionRouter(fastify: FastifyInstance) {
+  fastify.route({
+    method: 'POST',
+    url: '/withdraw',
+    handler: controllers.withdraw,
+  });
+
+  fastify.route({
+    method: 'POST',
+    url: '/send',
+    handler: controllers.send,
   });
 }
+
+export default transactionRouter;

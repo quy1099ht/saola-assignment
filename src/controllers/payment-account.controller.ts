@@ -10,17 +10,18 @@ import {
 import { utils } from '../utils/utils';
 import User from '../models/user.model';
 import { auth } from '../utils/auth';
-import PaymentAccount from '../models/payment-account.model';
+import PaymentAccount, { CurrencyType } from '../models/payment-account.model';
 
 export const createPaymentAccount = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { accountType, balance } = request.body as ICreatePaymentAccountBody;
+    const { accountType, balance, currency } = request.body as ICreatePaymentAccountBody;
     const user = await auth.getUser(request);
 
     const accountNumber = await utils.generateAccountNumber();
     const newAccount = new PaymentAccount({
       userId: user._id,
       accountType: accountType || 'DEBIT', // Default should be debit.
+      currency: currency || CurrencyType.USD,
       accountNumber,
       balance: balance || 0.0,
     });
@@ -40,7 +41,7 @@ export const createPaymentAccount = async (request: FastifyRequest, reply: Fasti
 
 export const editPaymentAccount = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { paymentAccountId, accountType, balance, isActive } =
+    const { paymentAccountId, accountType, balance, isActive, currency } =
       request.body as IEditPaymentAccountBody;
     const user = await auth.getUser(request);
 
@@ -58,6 +59,7 @@ export const editPaymentAccount = async (request: FastifyRequest, reply: Fastify
         accountType: accountType || paymentAccount?.accountType,
         balance: balance || paymentAccount?.balance,
         isActive: isActive || paymentAccount?.isActive,
+        currency: currency || paymentAccount?.currency,
       },
     );
 
@@ -72,6 +74,7 @@ export const editPaymentAccount = async (request: FastifyRequest, reply: Fastify
           accountType: accountType || paymentAccount?.accountType,
           balance: balance || paymentAccount?.balance,
           isActive: isActive || paymentAccount?.isActive,
+          currency: currency || paymentAccount?.currency,
         },
       },
       statusCode: STANDARD.CREATED,

@@ -1,4 +1,5 @@
-import { FastifyRegisterOptions } from "fastify";
+import { FastifyRegisterOptions } from 'fastify';
+import { Currency } from '../interfaces';
 
 export const STANDARD = {
   CREATED: 201,
@@ -65,4 +66,22 @@ export const swaggerConfig: FastifyRegisterOptions<any> = {
   },
 };
 
-export const defaultSecretKey = 'sfjusinuasngusdenafuasghnuijkasf' // This is just a random text cus I don't want to put empty string in
+export const defaultSecretKey = 'sfjusinuasngusdenafuasghnuijkasf'; // This is just a random text cus I don't want to put empty string in
+
+export const exchangeRates: Record<Currency, Record<Currency, number>> = {
+  USD: {
+    VND: 23000, // Example exchange rate
+    EUR: 0.85, // Example exchange rate
+    USD: 1,
+  },
+  VND: {
+    USD: 1 / 23000, // Example exchange rate
+    EUR: 1 / 27000, // Example exchange rate (just an example, use real data)
+    VND: 1,
+  },
+  EUR: {
+    USD: 1.18, // Example exchange rate
+    VND: 27000, // Example exchange rate (just an example, use real data)
+    EUR: 1,
+  },
+};

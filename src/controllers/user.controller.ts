@@ -4,7 +4,7 @@ import { ERRORS, handleServerError } from '../utils/errors';
 import { ILoginBody, ISignInBody } from '../interfaces';
 import { utils } from '../utils/utils';
 import User from '../models/user.model';
-import PaymentAccount from '../models/payment-account.model';
+import PaymentAccount, { CurrencyType } from '../models/payment-account.model';
 
 export const login = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -66,6 +66,7 @@ export const signUp = async (request: FastifyRequest, reply: FastifyReply) => {
     const newAccount = new PaymentAccount({
       userId: newUser._id,
       accountType: 'DEBIT',
+      currency: CurrencyType.USD,
       accountNumber,
       balance: 0.0,
     });

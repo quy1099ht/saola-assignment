@@ -8,7 +8,11 @@ enum AccountType {
   DEBIT = 'DEBIT',
   LOAN = 'LOAN',
 }
-
+export enum CurrencyType {
+  USD = 'USD',
+  VND = 'VND',
+  EUR = 'EUR',
+}
 interface PaymentAccountDocument extends Document {
   userId: mongoose.Schema.Types.ObjectId;
   accountType: AccountType;
@@ -16,6 +20,7 @@ interface PaymentAccountDocument extends Document {
   balance: number;
   createdAt: Date;
   isActive: boolean;
+  currency: CurrencyType;
   user: UserDocument;
   fromTransactions: TransactionDocument[];
   toTransactions: TransactionDocument[];
@@ -29,6 +34,7 @@ const paymentAccountSchema = new Schema<PaymentAccountDocument>({
   balance: { type: Number, default: 0.0 },
   createdAt: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true },
+  currency: { type: String, enum: Object.values(CurrencyType), required: true },
   fromTransactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }],
   toTransactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }],
   histories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PaymentHistory' }],

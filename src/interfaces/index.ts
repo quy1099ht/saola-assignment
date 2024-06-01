@@ -1,5 +1,6 @@
-import { AccountType } from '../models/payment-account.model';
+import { AccountType, CurrencyType } from '../models/payment-account.model';
 
+export type Currency = 'USD' | 'VND' | 'EUR';
 export interface IUserAuthToken {
   id: number;
   email: string;
@@ -29,10 +30,12 @@ export interface ILoginBody {
 export interface ICreatePaymentAccountBody {
   accountType?: AccountType;
   balance?: number;
+  currency?: CurrencyType;
 }
 export interface IEditPaymentAccountBody {
   paymentAccountId: string;
   accountType?: AccountType;
   balance?: number;
   isActive?: boolean;
+  currency?: CurrencyType;
 }
