@@ -8,7 +8,6 @@ This repository contains a Fastify application integrated with MongoDB, orchestr
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
   - [Environment Variables](#environment-variables)
-  - [Docker Compose](#docker-compose)
 - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
 - [Endpoints](#endpoints)
@@ -43,46 +42,6 @@ DATABASE_URL="mongodb://admin:admin@mongo:27017/saola-crypto?retryWrites=true&w=
 PORT=8080
 SECRET_KEY="y4kXCSAHfluj3iOfd8uakdoakojv"
 ```
-
-### Docker Compose
-
-The `docker-compose.yml` file sets up the Fastify application and MongoDB services.
-
-```yaml
-version: '3.8'
-
-services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-
-  fastify-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: fastify-app
-    restart: always
-    ports:
-      - '8080:8080'
-    environment:
-      DATABASE_URL: mongodb://admin:admin@mongo:27017/saola-crypto?retryWrites=true&w=majority&authSource=admin
-      PORT: 8080
-      SECRET_KEY: y4kXCSAHfluj3iOfd8uakdoakojv
-    depends_on:
-      - mongodb
-
-volumes:
-  mongo-data:
-```
-
 ## Running the Application
 
 To build and start the containers, run the following command:
